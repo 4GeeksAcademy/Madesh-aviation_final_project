@@ -5,7 +5,7 @@ from PIL import Image
 # PAGE CONFIG & BANNER IMAGE
 # ---------------------------
 st.set_page_config(page_title="Flight Incident Predictor", layout="wide")
-image = Image.open("/workspaces/Madesh3-aviation_final_project/static/photo.jpg")
+image = Image.open("/workspaces/Madesh-aviation_final_project/src/static/photo.jpg")
 
 # ---------------------------
 # MAIN APP
