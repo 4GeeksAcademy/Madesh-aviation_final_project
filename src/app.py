@@ -1,9 +1,12 @@
-import configuration as config 
 import streamlit as st
 import pandas as pd
 import numpy as np
 import pickle
 import os
+
+%cd ..
+
+import src.configuration as config 
 
 st.title("Worried Your Plane might Crash?")
 st.subheader("Submit your flight details to find out.")
