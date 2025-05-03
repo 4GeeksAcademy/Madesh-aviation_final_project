@@ -13,8 +13,7 @@ st.title("Worried Your Plane might Crash?")
 st.subheader("Submit your flight details to find out.")
 st.divider()
 
-st.image(os.path.join(os.path.dirname(__file__), "static", "crash.gif"), caption="Plane Crash Animation")
-
+st.image(os.path.join(os.path.dirname(__file__), "static", "photo.jpg"))
 
 # load dataset
 data_path = os.path.join(base_dir, "data", "processed", "combined_data.csv")
