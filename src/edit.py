@@ -20,16 +20,14 @@ st.set_page_config(
 # MAIN APP
 # ---------------------------
 def main():    
-    #st.title("✈️ Flight Incident Predictor", anchor="center")
-    #st.markdown('<h1 class="centered-title">✈️ Flight Incident Predictor</h1>', unsafe_allow_html=True)
-    #st.markdown('<p class="centered-text">This app predicts the likelihood of a flight incident based on origin, destination, and departure time information</p>', unsafe_allow_html=True)
-    
     # Create two columns for parallel display
     col1, col2, col3 = st.columns([1,2,1])
 
     # Display GIFs in respective columns
     with col1:
         st.image(os.path.join(os.path.dirname(__file__), "static", "take_off_1.gif"), use_container_width=True)
+    
+    # Set title and subtitle
     with col2:
         # Add custom CSS with more styling options
         st.markdown("""
@@ -46,28 +44,58 @@ def main():
             </style>
             """, unsafe_allow_html=True)
         # Use the styled title
-        st.markdown('<h1 class="centered-title">✈️ Flight Incident Predictor</h1>', unsafe_allow_html=True) 
+        st.markdown('<h1 class="centered-title">Flight Incident Predictor</h1>', unsafe_allow_html=True) 
         
-        st.markdown("""
-            <style>
-            .centered-text {
-            text-align: center;
-            font-size: 2.5rem;
-            font-weight: plain;
-            color: white;
-            }
-            </style>
-            """, unsafe_allow_html=True)
         # Use the styled title
-        st.markdown('<p class="centered-text">This app predicts the likelihood of a flight incident based on origin, destination, and departure time information</p>', unsafe_allow_html=True)
+        st.markdown('<p class="centered-text">This app predicts the likelihood of a flight incident based on origin, destination, and departure time information!</p>', unsafe_allow_html=True)
+       
+    # Display GIFs in respective columns
     with col3:
         st.image(os.path.join(os.path.dirname(__file__), "static", "crash_1.gif"), use_container_width=True)
     st.divider()
+
     # ---------------------------
     # TABS
     # ---------------------------
-    tab1, tab2, tab3 = st.tabs(["Incident Predictor", "Model Performance", "Data Exploration"])
-
+    # Custom CSS for tab styling
+    st.markdown("""
+    <style>
+        /* Tab container */
+        .stTabs [data-baseweb="tab-list"] {
+            gap: 1rem;
+            justify-content: center;
+        }
+        /* Tab headers */
+        .stTabs [data-baseweb="tab"] {
+            font-size: 1.5rem;
+            font-weight: 600;
+            padding: 1.5rem 3rem;
+            background-color: #b1d1fa;
+            color: black;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        /* Hover effect */
+        .stTabs [data-baseweb="tab"]:hover {
+            background-color: #54b096;
+            color: black
+            transform: translateY(-2px);
+        }
+        /* Selected tab */
+        .stTabs [aria-selected="true"] {
+            font-size: 1.6rem;
+            font-weight: 700;
+            background-color: #b1d1fa;
+            color: black;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+    """, unsafe_allow_html=True)
+    # Use the styled title
+    
+    # Create tabs for different sections of the app
+    tab1, tab2, tab3 = st.tabs(["🏠 Incident Predictor", " 📈 Model Performance", " 📊 Data Exploration"])
+    
     # TAB 1: Incident Predictor UI Skeleton
     with tab1:
         st.header("Predict Flight Incident Risk")
