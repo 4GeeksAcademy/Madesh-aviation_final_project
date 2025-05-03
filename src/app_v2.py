@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import pickle
 import os
+import plotly.graph_objects as go
 
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath("app.py")))
 
@@ -103,7 +104,7 @@ def main():
         </style>
         """, unsafe_allow_html=True)
     
-    st.markdown('<h2 class="sub-header">Please choose from options below for a prediction! </h2>', unsafe_allow_html=True)
+    st.markdown('<h2 class="sub-header">Please choose from below options for a prediction! </h2>', unsafe_allow_html=True)
         # Custom CSS for form elements
     st.markdown("""
         <style>
@@ -140,14 +141,42 @@ def main():
         "destination": None,
         "departure_time": None,
         }
-
+    st.markdown("""
+        <style>
+        .stButton button {
+            width: 200px;
+            margin: 1rem auto;
+            background-color: #4CAF50;
+            background: linear-gradient(45deg, #1E88E5, #00BCD4);
+            color: white;
+            font-size: 2.1rem;
+            font-weight: bold;
+            padding: 3rem 6rem;
+            border-radius: 5px;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        .stButton button:hover {
+            background: linear-gradient(45deg, #1565C0, #0097A7);
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        </style>
+        """, unsafe_allow_html=True)
     with st.form(key="user_flight_details"):
-        flight_details["origin"] = st.selectbox(label="Enter the departure airport: ", options=data_df['origin'].unique(), placeholder='LGA')
-        flight_details["destination"] = st.selectbox(label="Enter the destination airport: ", options=data_df['destination'].unique(), placeholder='ORF')
-        flight_details["departure_time"] = st.time_input("Enter your departure time (use military time): ")
-
+        # create three columns for parallel display
+        col1, col2, col3 = st.columns(3)
+        with col1: 
+            flight_details["origin"] = st.selectbox(label="Enter the departure airport: ", options=data_df['origin'].unique(), placeholder='LGA')
+        with col2: 
+            flight_details["destination"] = st.selectbox(label="Enter the destination airport: ", options=data_df['destination'].unique(), placeholder='ORF')
+        with col3: 
+            flight_details["departure_time"] = st.time_input("Enter your departure time (use military time): ")
+        # submit button
         submit = st.form_submit_button("Submit")
-
+    
+    # Process the form submission
+    # Check if the form was submitted
     if submit:
         if not all(flight_details.values()):
             st.warning("Please fill in all of the fields")
@@ -196,6 +225,30 @@ def main():
 
                 # Display predictions
             st.write(f"The probability of your plane crashing is {percent_probability.item():.2f}%")
+            # Gauge chart
+            fig = go.Figure(go.Indicator(
+                mode="gauge+number+delta",
+                value=percent_probability.item(),
+                delta={'reference': 50, 'increasing': {'color': "red"}},
+                gauge={
+                    'axis': {'range': [0, 100]},
+                    'bar': {'color': "darkblue"},
+                    'steps': [
+                        {'range': [0, 25], 'color': "lightgreen"},
+                        {'range': [25, 50], 'color': "yellow"},
+                        {'range': [50, 75], 'color': "orange"},
+                        {'range': [75, 100], 'color': "red"}
+                    ],
+                    'threshold': {
+                        'line': {'color': "black", 'width': 4},
+                        'thickness': 0.75,
+                        'value': percent_probability.item()
+                    }
+                },
+                title={'text': "Flight Incident Risk (%)"}
+            ))
+
+            st.plotly_chart(fig, use_container_width=True)
 
 if __name__ == "__main__":
     main()
