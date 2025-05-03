@@ -17,9 +17,8 @@ st.set_page_config(
 )
 st.title("✈️ FLIGHT INCIDENT PREDICTOR")
 st.subheader("Submit your flight details to find out")
-st.divider()
-
 st.image(os.path.join(os.path.dirname(__file__), "static", "crash_1.gif"), caption="Plane Crash")
+st.divider()
 
 # load dataset
 data_path = os.path.join(base_dir, "data", "processed", "combined_data.csv")
