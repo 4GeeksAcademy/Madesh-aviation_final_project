@@ -5,15 +5,21 @@ import numpy as np
 import pickle
 import os
 
-base_dir = os.path.dirname(os.path.dirname(os.path.abspath("app.py")))
-
-
-st.title("Worried Your Plane might Crash?")
-st.subheader("Submit your flight details to find out.")
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath("edit.py")))
+# ---------------------------
+# PAGE CONFIG & BANNER IMAGE
+# ---------------------------
+# Set page config
+st.set_page_config(
+    page_title="Flight Incident Predictor",
+    page_icon="✈️",
+    layout="wide"
+)
+st.title("✈️ FLIGHT INCIDENT PREDICTOR")
+st.subheader("Submit your flight details to find out")
 st.divider()
 
 st.image(os.path.join(os.path.dirname(__file__), "static", "crash_1.gif"), caption="Plane Crash")
-
 
 # load dataset
 data_path = os.path.join(base_dir, "data", "processed", "combined_data.csv")
