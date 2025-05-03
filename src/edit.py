@@ -67,8 +67,8 @@ def main():
         }
         /* Tab headers */
         .stTabs [data-baseweb="tab"] {
-            font-size: 1.5rem;
-            font-weight: 600;
+            font-size: 9rem; #text size 
+            font-weight: 900;
             padding: 1.5rem 3rem;
             background-color: #b1d1fa;
             color: black;
@@ -111,6 +111,7 @@ def main():
 
         if st.button("Predict Incident Probability"):
             st.warning("Prediction logic not implemented.")
+
     # TAB 2: Model Performance UI Skeleton
     with tab2:
         st.header("Model Performance Metrics")

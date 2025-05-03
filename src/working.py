@@ -1,20 +1,4 @@
-import configuration as config 
 import streamlit as st
-import pandas as pd
-import numpy as np
-import pickle
-import os
-
-base_dir = os.path.dirname(os.path.dirname(os.path.abspath("app.py")))
-
-
-
-st.title("Worried Your Plane might Crash?")
-st.subheader("Submit your flight details to find out.")
-st.divider()
-
-st.image(os.path.join(os.path.dirname(__file__), "static", "photo.jpg"))
-
 # load dataset
 data_path = os.path.join(base_dir, "data", "processed", "combined_data.csv")
 data_df = pd.read_csv(data_path)
@@ -25,10 +9,21 @@ flight_details = {
         "departure_time": None,
     }
 
+col1, col2 = st.columns(2)
+
+with col1:
+    origin = st.selectbox("Origin Airport", ["Select..."])
+    destination = st.selectbox("Destination Airport", ["Select..."])
+with col2:
+    departure_time = st.number_input("Departure Time (e.g., 1430 for 2:30 PM)", min_value=0, max_value=2359, step=5)
+    
+    if  st.button("Predict Incident Probability"):
+        st.warning("Prediction logic not implemented.")
+        
 with st.form(key="user_flight_details"):
     flight_details["origin"] = st.selectbox(label="Enter the departure airport: ", options=data_df['origin'].unique(), placeholder='LGA')
     flight_details["destination"] = st.selectbox(label="Enter the destination airport: ", options=data_df['destination'].unique(), placeholder='ORF')
-    flight_details["departure_time"] = st.time_input("Enter your departure time (use military time): ")
+    flight_details["departure_time"] = st.time_input("Enter your departure time (use military time): ",)
 
     submit = st.form_submit_button("Submit")
 
