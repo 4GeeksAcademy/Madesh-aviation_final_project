@@ -5,6 +5,14 @@ import numpy as np
 import pickle
 import os
 import plotly.graph_objects as go
+import plotly.express as px
+import plotly.io as pio
+from sklearn.metrics import (
+        accuracy_score, precision_score, recall_score, f1_score,
+        confusion_matrix, roc_auc_score, roc_curve
+        )
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath("app.py")))
 
@@ -254,8 +262,73 @@ def main():
                 st.plotly_chart(fig, use_container_width=True)
     # TAB 2: Model Performance UI Skeleton
     with tab2:
-        st.header("Model Performance Metrics")
+        st.header("📊 Model Performance")
         st.info("Model evaluation metrics and visualizations will appear here.")
+
+        # Load test set (assume you saved it or recreate it)
+        test_path = os.path.join(base_dir, "data", "processed", "test_data.csv")
+        if os.path.exists(test_path):
+            test_df = pd.read_csv(test_path)
+
+            # Recreate features
+            test_df['route'] = test_df['origin'] + '_' + test_df['destination']
+            route_frequency = data_df['origin'] + '_' + data_df['destination']
+            route_frequency = route_frequency.value_counts().to_dict()
+            test_df['route_encoded'] = test_df['route'].map(route_frequency)
+            test_df['route_encoded'].fillna(0, inplace=True)
+
+            def hhmm_to_minutes(hhmm):
+                hours, minutes = map(int, hhmm.split(":"))
+                return hours * 60 + minutes
+
+            test_df['Time'] = test_df['departure_time'].apply(hhmm_to_minutes)
+            test_df['time_sin'] = np.sin(2 * np.pi * test_df['Time'] / 1440)
+            test_df['time_cos'] = np.cos(2 * np.pi * test_df['Time'] / 1440)
+
+            X_test = test_df[['time_sin', 'time_cos', 'route_encoded']]
+            y_test = test_df['incident']
+
+            # Predictions
+            y_pred = model.predict(X_test)
+            y_prob = model.predict_proba(X_test)[:, 1]
+
+            # Metrics
+            acc = accuracy_score(y_test, y_pred)
+            prec = precision_score(y_test, y_pred, zero_division=0)
+            rec = recall_score(y_test, y_pred)
+            f1 = f1_score(y_test, y_pred)
+            auc = roc_auc_score(y_test, y_prob)
+
+            st.markdown("### 🔧 Classification Metrics")
+            st.write(f"**Accuracy:** {acc:.2f}")
+            st.write(f"**Precision:** {prec:.2f}")
+            st.write(f"**Recall:** {rec:.2f}")
+            st.write(f"**F1 Score:** {f1:.2f}")
+            st.write(f"**ROC AUC:** {auc:.2f}")
+
+            # Confusion Matrix
+            st.markdown("### 📉 Confusion Matrix")
+            cm = confusion_matrix(y_test, y_pred)
+            fig, ax = plt.subplots()
+            sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=['No Incident', 'Incident'], yticklabels=['No Incident', 'Incident'], ax=ax)
+            ax.set_xlabel('Predicted')
+            ax.set_ylabel('Actual')
+            st.pyplot(fig)
+
+            # ROC Curve
+            st.markdown("### 🧭 ROC Curve")
+            fpr, tpr, _ = roc_curve(y_test, y_prob)
+            fig2, ax2 = plt.subplots()
+            ax2.plot(fpr, tpr, color='blue', label=f"AUC = {auc:.2f}")
+            ax2.plot([0, 1], [0, 1], linestyle='--', color='gray')
+            ax2.set_xlabel('False Positive Rate')
+            ax2.set_ylabel('True Positive Rate')
+            ax2.set_title('Receiver Operating Characteristic (ROC) Curve')
+            ax2.legend(loc='lower right')
+            st.pyplot(fig2)
+
+        else:
+            st.error("🚨 Test dataset not found. Please ensure `test_data.csv` exists in your `data/processed` folder.")
 
     # TAB 3: Data Exploration UI Skeleton
     with tab3:
